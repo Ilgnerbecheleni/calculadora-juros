@@ -5,23 +5,24 @@ import { Icon, Input } from '@rneui/base';
 const Calculadora = () => {
     const [valorMontante, setValorMontante] = useState('');
     const [taxaJuros, setTaxaJuros] = useState('');
+    const [tempo, setTempo] = useState('');
     const [resultado, setResultado] = useState('');
     const [resultadoTotal, setResultadoTotal] = useState('');
 
     const calcularJurosSimples = () => {
         const montante = parseFloat(valorMontante);
-        const juros = parseFloat(taxaJuros);
-
-        if (!isNaN(montante) && !isNaN(juros)) {
-            const jurosSimples = (montante * juros) / 100;
-            const total = montante + jurosSimples;
-            setResultado(`Valor dos juros: R$ ${jurosSimples.toFixed(2)}`);
-            setResultadoTotal(`Valor total: R$ ${total.toFixed(2)}`);
-          
+        const taxaMensal = parseFloat(taxaJuros);
+        const tempoEmMeses = parseInt(tempo);
+    
+        if (!isNaN(montante) && !isNaN(taxaMensal) && !isNaN(tempoEmMeses)) {
+          const jurosSimples = (montante * (taxaMensal / 100) * tempoEmMeses);
+          const total = montante + jurosSimples;
+          setResultado(`Valor dos juros: R$ ${jurosSimples.toFixed(2)}`);
+          setResultadoTotal(`Valor total: R$ ${total.toFixed(2)}`);
         } else {
-            setResultado('Por favor, insira valores válidos.');
+          setResultado('Por favor, insira valores válidos.');
         }
-    };
+      };
 
     return (
         <View style={styles.container}>
@@ -44,7 +45,7 @@ const Calculadora = () => {
                     inputContainerStyle={styles.input}
                     placeholderTextColor='#000'
                     leftIconContainerStyle={styles.iconContainer}
-                    placeholder='% Taxa de juros'
+                    placeholder='% Taxa de juros mensal'
                     value={taxaJuros}
                     onChangeText={(text) => setTaxaJuros(text)}
                     leftIcon={<Icon
@@ -53,13 +54,27 @@ const Calculadora = () => {
                         color='#000'
                     />}
                 />
-<Text style={styles.resultado}>{resultado}</Text>
-<Text style={styles.resultado}>{resultadoTotal}</Text>
+
+                <Input
+                    inputContainerStyle={styles.input}
+                    placeholderTextColor='#000'
+                    leftIconContainerStyle={styles.iconContainer}
+                    placeholder='tempo em meses'
+                    value={tempo}
+                    onChangeText={(text) => setTempo(text)}
+                    leftIcon={<Icon
+                        name='schedule'
+                        type='material-icons'
+                        color='#000'
+                    />}
+                />
+                <Text style={styles.resultado}>{resultado}</Text>
+                <Text style={styles.resultado}>{resultadoTotal}</Text>
                 <TouchableOpacity style={styles.botao} onPress={calcularJurosSimples}>
                     <Text style={styles.textobotao}>Calcular</Text>
                 </TouchableOpacity>
             </View>
-            
+
         </View>
     );
 }
@@ -71,13 +86,13 @@ const styles = StyleSheet.create({
 
         alignItems: 'center',
         justifyContent: 'space-evenly',
-       
+
         flex: 1
     },
     resultado: {
         margin: 20,
         fontSize: 24,
-        textAlign:'left',
+        textAlign: 'left',
         width: '100%',
     },
     botao: {
